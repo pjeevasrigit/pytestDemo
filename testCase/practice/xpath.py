@@ -70,6 +70,8 @@ def test_xpath(page: Page):
         checkbox.uncheck()
         expect(checkbox).not_to_be_checked()
 
+    #####################################################
+
     page.locator("#country").select_option(label="India")
 
     dropdownOptions = page.locator("#country > option")
@@ -85,3 +87,12 @@ def test_xpath(page: Page):
 
     for country in option_text:
         print(country)
+
+    #multiple dropdown
+    page.locator("#colors").select_option(['Red','Blue','Green'])
+    page.locator("#colors").select_option(label=['Red','Blue','Green'])
+    page.locator("#colors").select_option(value=['Red','Blue','Green'])
+    page.locator("#colors").select_option(index=[2,4])
+
+    dropdown_multi = page.locator("#colors>options")
+    expect(dropdown_multi).to_have_count(7)
