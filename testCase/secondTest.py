@@ -6,11 +6,15 @@
 #tag.class[attribute=value]
 import re
 from playwright.sync_api import Page,expect
+import datetime
 
 
 # page.get_by_alt_text() to locate an element, usually image, by its text alternative.
 def test_verify_page(page:Page):
+
     page.goto("https://demowebshop.tricentis.com/")
+    timeStamp=datetime.datetime.now().strftime("%Y%m%d")
+    page.screenshot(path=f"screenshots/homepage_{timeStamp}.png",full_page=True)
     page.wait_for_timeout(5000)
     page.locator("input#small-searchterms").fill("iphone")
     page.locator("#small-searchterms").fill("phone")
