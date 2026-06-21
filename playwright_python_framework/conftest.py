@@ -1,0 +1,30 @@
+from pathlib import Path
+import pytest
+from slugify import slugify
+import allure
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    # Let's ensure we are dealing with a test report
+    pytest_html=item.config.pluginmanager.getplugin("html")
+    outcome = yield
+    screen_file=''
+    report=outcome.get_result()
+    extra=getattr(report,"extra",[])
+    if report.when== "call":
+        xfail=hasattr(report,"wasxfail")
+        if report.failed or xfail and "page" in item.funcargs:
+            page=item.funcargs["page"]
+            screenshot_dir=Path("screenshots")
+            screenshot_dir.mkdir(exist_ok=True)
+            screen_file=str(screenshot_dir/f"{slugify(item.nodeid)}.png")
+            page.screenshot(path=screen_file)
+
+        if (report.skipped and xfail) or (report.failed and not xfail):
+            extra.append(pytest_html.extras.png(screen_file))
+        
+        allure.attach.file(screen_file,name="failure screenshot",attachment_type=allure.attachment_type.PNG)
+        
+        report.extra=extra
+
+           
