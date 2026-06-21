@@ -96,3 +96,18 @@ def test_xpath(page: Page):
 
     dropdown_multi = page.locator("#colors>options")
     expect(dropdown_multi).to_have_count(7)
+
+    #check sorted or unsored dropdown
+    secondDropdownOptions = page.locator("#colors>options") 
+    options_list = [text.strip() for text in secondDropdownOptions.all_text_contents()]
+    originalList = options_list.copy()
+    sortedList = sorted(originalList)
+
+    if(originalList == sortedList):
+        print("Optinos are sorted")
+    else:
+        print('options are not sorted')
+
+
+    #hadling table data
+    table=page.locator("")
